@@ -1,5 +1,7 @@
 import string
 from collections import Counter
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
 import matplotlib.pyplot as plt
 
 
@@ -7,12 +9,12 @@ def sentiment(stopwords, text):
     arr_stopwords = stopwords.split()
     lower_case = text.lower()
     cleaned_text = lower_case.translate(str.maketrans('', '', string.punctuation))
-    tokenized_words = cleaned_text.split()
+    tokenized_words = word_tokenize(cleaned_text, "english")
 
     final_words = []
 
     for word in tokenized_words:
-        if word not in arr_stopwords:
+        if word not in stopwords.words("english"):
             final_words.append(word)
 
     emotion_list = []
@@ -23,7 +25,20 @@ def sentiment(stopwords, text):
 
             if word in final_words:
                 emotion_list.append(emotion)
+    sentiment_analysis(cleaned_text)
     return emotion_list
+
+
+def sentiment_analysis(sentiement_text):
+    score = SentimentIntensityAnalyzer().polarity_scores(sentiment_text)
+    neg = score['neg']
+    pos = score['pos']
+    if neg > pos:
+        print("Negative Sentiment")
+    elif pos > pos:
+        print("Positive Sentiment")
+    else:
+        print("Neutral Vibe")
 
 
 def plot_graph(emotion_list):
